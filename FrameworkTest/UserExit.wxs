@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+
+<!-- UseExit.wxs
+     Eines der fünf "Pflicht-Dialogfenstern", die in jedem MSI-Programm
+     enthalten sein müssen.
+     Wird angezeigt, wenn der Benutzer die Installation abbricht.
+-->
+
+  <Fragment>
+  
+  <UI>
+    
+    <Dialog Id="UserExit"
+            Width="250"
+            Height="100"
+            Title="Vorhandene Frameworks">
+      
+      <Control Id="Description"
+               Type="Text"
+               X="10"
+               Y="10"
+               Width="230"
+               Height="70"
+               Text="[ProductName] Installation wurde vom Benutzer abgebrochen. Ihr System wurde nicht verändert." />
+      
+      <Control Id="Finish"
+               Type="PushButton"
+               X="100"
+               Y="75"
+               Width="56"
+               Height="17"
+               Default="yes"
+               Cancel="yes"
+               Text="Beenden">
+        
+        <Publish Event="EndDialog"
+                 Value="Exit" />
+      </Control>
+      
+    </Dialog>
+  </UI>
+  
+  <InstallUISequence>
+    <Show Dialog="UserExit"
+          OnExit="cancel" />
+  </InstallUISequence>
+  
+  <AdminUISequence>
+    <Show Dialog="UserExit"
+          OnExit="cancel" />
+  </AdminUISequence>
+  
+</Fragment>
+</Wix>
+               

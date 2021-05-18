@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- FrameworkAnzeige.wxs
+     Hier soll angezeigt werden, ob auf dem Zielrechner die Frameworks
+     ".NET Framework 4.8" und ".NET Core 3.1" vorhanden sind.
+-->
+
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+     xmlns:util="http://schemas.microsoft.com/wix/UtilExtension"
+     xmlns:netfx="http://schemas.microsoft.com/wix/NetFxExtension">
+
+  <Fragment>
+
+    <PropertyRef Id="WIXNETFX4RELEASEINSTALLED"/>
+    
+    <util:DirectorySearch Id="NetCorex86Installed" 
+                          Variable="NetCorex86Installed"
+                          Path="[ProgramFilesFolder]\dotnet\shared\Microsoft.WindowsDesktop.App\3.1.14"
+                          Result="exists" />
+    
+    <util:DirectorySearch Id="NetCorex64Installed" 
+                          Variable="NetCorex64Installed"
+                          Path="[ProgramFiles64Folder]\dotnet\shared\Microsoft.WindowsDesktop.App\3.1.14"
+                          Result="exists" />
+       
+    <UI Id="MeinFrameworkTestProgramm">
+      
+<!-- DialogRef-Elemente
+     Verweise auf andere Dialogfenster (diese fünf sind Pflicht für alle MSI-Projekte)
+-->
+      <DialogRef Id="FilesInUse" />
+      <DialogRef Id="ErrorDlg" />
+      <DialogRef Id="FatalError" />
+      <DialogRef Id="UserExit" />
+      <DialogRef Id="ExitDlg" />
+      
+<!-- Die Standard-Schriftart muss definiert und mindestens ein TextStyle muss festgelegt werden.
+-->
+      <Property Id="DefaultUIFont"
+                Value="Tahoma_Regular" />
+      
+      <TextStyle Id="Tahoma_Regular"
+                 FaceName="Tahoma"
+                 Size="8" />
+
+<!-- Definition des Dialogfensters mit allen Kontroll-Elementen
+-->
+      <Dialog Id="FrameworkAnzeigeDialog"
+              Width="250"
+              Height="100"
+              Title="Vorhandene Frameworks"
+              NoMinimize="no">
+
+        <Control Id="Textfeld1"
+                 Type="Text"
+                 X="10"
+                 Y="10"
+                 Width="230"
+                 Height="10"
+                 TabSkip="no"
+                 Text=".NET Framework 4.8 vorhanden.">
+
+          <Condition Action="hide">
+            <![CDATA[WIXNETFX4RELEASEINSTALLED < "#528040"]]>
+          </Condition>
+        </Control>
+
+        <Control Id="Textfeld2"
+                 Type="Text"
+                 X="10"
+                 Y="20"
+                 Width="230"
+                 Height="10"
+                 TabSkip="no"
+                 Text=".NET Framework 4.8 fehlt.">
+
+          <Condition Action="hide">
+            <![CDATA[WIXNETFX4RELEASEINSTALLED >= "#528040"]]>
+          </Condition>
+        </Control>
+
+        <Control Id="Textfeld3"
+                 Type="Text"
+                 X="10"
+                 Y="30"
+                 Width="230"
+                 Height="10"
+                 TabSkip="no"
+                 Text=".NET Core 3.1.14 vorhanden.">
+
+          <Condition Action="hide">
+            <![CDATA[NOT (NetCorex86Installed OR NetCorex64Installed)]]>
+          </Condition>
+        </Control>
+
+        <Control Id="Textfeld4"
+                 Type="Text"
+                 X="10"
+                 Y="40"
+                 Width="230"
+                 Height="10"
+                 TabSkip="no"
+                 Text=".NET Core 3.1.14 fehlt.">
+
+          <Condition Action="hide">
+            <![CDATA[NetCorex86Installed OR NetCorex64Installed]]>
+          </Condition>
+        </Control>
+
+        <Control Id="OkButton"
+                 Type="PushButton"
+                 Text="OK"
+                 X="100"
+                 Y="75"
+                 Height="17"
+                 Width="50">
+
+          <Publish Event="EndDialog"
+                   Value="Exit" />
+        </Control>
+
+      </Dialog>
+    </UI>
+    
+    
+    
+<!-- InstallUISequence-Element
+     An dieser Stelle wird das Installationsprogramm gestartet und das erste
+     Dialogfenster angezeigt. Die Anzahl und Reihenfolge der weiteren Dialogfenster
+     ergibt sich aus dem Inhalt der Publish-Elemente innerhalb der Control-Elemente.
+-->
+    <InstallUISequence>
+
+      <Show Dialog="FrameworkAnzeigeDialog"
+            Before="ExecuteAction" />
+
+    </InstallUISequence>
+
+  </Fragment>
+
+</Wix>

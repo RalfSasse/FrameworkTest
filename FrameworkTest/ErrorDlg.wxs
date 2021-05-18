@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+
+<!-- ErrorDlg.wxs
+     Eines der fünf "Pflicht-Dialogfenstern", die in jedem MSI-Programm
+     enthalten sein müssen.
+     Zeigt während der Installation evtl. notwendige Fehlermeldungen an.
+     Wichtig ist das Property-Element, dessen Wert mit der Id des Dialog-
+     Elementes identisch sein muss. Erstes Control-Element muss der
+     "ErrorText" sein, und dieses muss das Attribut TabSkip="no" enthalten!
+     Sonst drohen Compilerfehler wie "ErrorDlg not found in Dialog table".
+     Auch die sieben Buttons sind Pflicht und müssen genau so geschrieben
+     werden. Ihre Position im Fenster kann (und sollte) identisch sein.
+-->
+
+  <Fragment>
+    
+    <UI>
+      
+      <Property Id="ErrorDialog"
+                Value="ErrorDlg" />
+      
+      <Dialog Id="ErrorDlg"
+              Width="370"
+              Height="270"
+              Title="WiX-Test6 Installation"
+              ErrorDialog="yes">
+
+        <Control Id="ErrorText"
+                 Type="Text"
+                 X="50"
+                 Y="15"
+                 Width="200"
+                 Height="60"
+                 TabSkip="no" />
+
+        <Control Id="A"
+                 Type="PushButton"
+                 X="100"
+                 Y="80"
+                 Width="56"
+                 Height="17"
+                 TabSkip="yes"
+                 Text="Abbrechen (Abort)">
+
+          <Publish Event="EndDialog"
+                   Value="ErrorAbort">1</Publish>
+        </Control>
+
+        <Control Id="C"
+                 Type="PushButton"
+                 X="100"
+                 Y="80"
+                 Width="56"
+                 Height="17"
+                 TabSkip="yes"
+                 Text="Abbrechen (Cancel)">
+
+          <Publish Event="EndDialog"
+                   Value="ErrorCancel">1</Publish>
+        </Control>
+
+        <Control Id="I"
+                 Type="PushButton"
+                 X="100"
+                 Y="80"
+                 Width="56"
+                 Height="17"
+                 TabSkip="yes"
+                 Text="Ignorieren">
+
+          <Publish Event="EndDialog"
+                   Value="ErrorIgnore">1</Publish>
+        </Control>
+
+        <Control Id="N"
+                 Type="PushButton"
+                 X="100"
+                 Y="80"
+                 Width="56"
+                 Height="17"
+                 TabSkip="yes"
+                 Text="Nein">
+
+          <Publish Event="EndDialog"
+                   Value="ErrorNo">1</Publish>
+        </Control>
+
+        <Control Id="O"
+                 Type="PushButton"
+                 X="100"
+                 Y="80"
+                 Width="56"
+                 Height="17"
+                 Text="OK">
+
+          <Publish Event="EndDialog"
+                   Value="ErrorOk">1</Publish>
+        </Control>
+
+        <Control Id="R"
+                 Type="PushButton"
+                 X="100"
+                 Y="80"
+                 Width="56"
+                 Height="17"
+                 Text="Wiederholen">
+
+          <Publish Event="EndDialog"
+                   Value="ErrorRetry">1</Publish>
+        </Control>
+
+        <Control Id="Y"
+                 Type="PushButton"
+                 X="100"
+                 Y="80"
+                 Width="56"
+                 Height="17"
+                 TabSkip="yes"
+                 Text="Ja">
+
+          <Publish Event="EndDialog"
+                   Value="ErrorYes">1</Publish>
+        </Control>
+
+      </Dialog>
+      
+    </UI>
+  </Fragment>
+</Wix>
+

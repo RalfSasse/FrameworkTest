@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+
+<!-- ExitDlg.wxs
+     Eines der fünf "Pflicht-Dialogfenstern", die in jedem MSI-Programm
+     enthalten sein müssen.
+     Wird angezeigt, wenn die Installation erfolgreich abgeschlossen wurde.
+-->
+
+  <Fragment>
+  
+    <UI>
+    
+      <Dialog Id="ExitDlg"
+              Width="370"
+              Height="270"
+              Title="WiX-Test6 Installation">
+        
+        <Control Id="Description"
+                 Type="Text"
+                 X="50"
+                 Y="70"
+                 Width="220"
+                 Height="80"
+                 Text="[ProductName] Installation wurden erfolgreich abgeschlossen." />
+        
+        <Control Id="Finish"
+                 Type="PushButton"
+                 X="180"
+                 Y="243"
+                 Width="56"
+                 Height="17"
+                 Default="yes"
+                 Cancel="yes"
+                 Text="Beenden">
+          
+          <Publish Event="EndDialog"
+                 Value="Exit" />
+        </Control>
+        
+    </Dialog>
+      
+  </UI>
+    
+  <InstallUISequence>
+    <Show Dialog="ExitDlg"
+          OnExit="success" />
+  </InstallUISequence>
+    
+  <AdminUISequence>
+    <Show Dialog="ExitDlg"
+          OnExit="success" />
+  </AdminUISequence>
+    
+</Fragment>
+</Wix>
+

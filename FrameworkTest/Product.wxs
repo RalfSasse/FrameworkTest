@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<Product Id="*" Name="FrameworkTest" Language="1033" Codepage="1252" Version="1.0.0.0" Manufacturer="RalfSasse" UpgradeCode="5bbbf591-d840-4845-8463-7e3b07c1fc02">
+		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+
+		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+    
+<!-- Das Media-Element verhindert die Warnung "ICE71: The Media table has no entries."
+     und ersetzt das MediaTemplate-Element.
+-->
+    <Media Id='1' />
+
+<!-- UIRef-Element
+     Verweis auf das User-Interface (UI-Element) in der Datei "FrameworkAnzeige.wxs",
+     in dem das Dialogfenster des Installationsprogramms definiert ist. Dieser Verweis
+     führt dazu, dass alle Dialogfenster in das Hauptprogramm eingebunden werden.
+-->
+    <UIRef Id="MeinFrameworkTestProgramm" />
+
+    <Feature Id="ProductFeature" Title="FrameworkTest" Level="1">
+			<ComponentGroupRef Id="ProductComponents" />
+		</Feature>
+	</Product>
+
+	<Fragment>
+		<Directory Id="TARGETDIR" Name="SourceDir">
+			<Directory Id="ProgramFilesFolder">
+				<Directory Id="INSTALLFOLDER" Name="FrameworkTest" />
+			</Directory>
+		</Directory>
+	</Fragment>
+
+	<Fragment>
+		<ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+		</ComponentGroup>
+	</Fragment>
+
+</Wix>

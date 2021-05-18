@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+
+<!-- FatalError.wxs
+     Eines der fünf "Pflicht-Dialogfenstern", die in jedem MSI-Programm
+     enthalten sein müssen.
+     Zeigt eine (statische) Fehlermeldung an, wenn ein nicht-behebbarer
+     Fehler auftritt.
+-->
+
+  <Fragment>
+  
+  <UI>
+    
+    <Dialog Id="FatalError"
+            Width="370"
+            Height="270"
+            Title="WiX-Test6 Installation">
+      
+      <Control Id="Description"
+               Type="Text"
+               X="50"
+               Y="70"
+               Width="220"
+               Height="80"
+               Text="[ProductName] Installation wurde wegen eines Fehlers vorzeitig beendet. Ihr System wurde nicht verändert." />
+      
+      <Control Id="Finish"
+               Type="PushButton"
+               X="180"
+               Y="243"
+               Width="56"
+               Height="17"
+               Default="yes"
+               Cancel="yes"
+               Text="Beenden">
+        
+        <Publish Event="EndDialog"
+                 Value="Exit" />
+      </Control>
+    </Dialog>
+  </UI>
+  
+  <InstallUISequence>
+    <Show Dialog="FatalError"
+          OnExit="error" />
+  </InstallUISequence>
+  
+  <AdminUISequence>
+    <Show Dialog="FatalError"
+          OnExit="error" />
+  </AdminUISequence>
+  
+</Fragment>
+</Wix>
+    
+    

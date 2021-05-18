@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31205.134
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "FrameworkTest", "FrameworkTest\FrameworkTest.wixproj", "{EA68CA59-FC12-4CE3-998B-6F53022CCB04}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EA68CA59-FC12-4CE3-998B-6F53022CCB04}.Debug|x86.ActiveCfg = Debug|x86
+		{EA68CA59-FC12-4CE3-998B-6F53022CCB04}.Debug|x86.Build.0 = Debug|x86
+		{EA68CA59-FC12-4CE3-998B-6F53022CCB04}.Release|x86.ActiveCfg = Release|x86
+		{EA68CA59-FC12-4CE3-998B-6F53022CCB04}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {03EB767F-0422-4537-8CFD-13BF32FA2499}
+	EndGlobalSection
+EndGlobal
