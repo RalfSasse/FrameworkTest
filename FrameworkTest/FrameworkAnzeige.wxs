@@ -10,9 +10,22 @@
      xmlns:netfx="http://schemas.microsoft.com/wix/NetFxExtension">
 
   <Fragment>
-
+    
+<!-- WiX-Systemvariable abfragen, die die aktuelle Versionsnummer von .NET Framework 4 enthält
+     (z.B. 528040 für .NET Framework 4.8). Erfordert einen Verweis auf NetFxExtension (siehe
+     Zeile 10, Verweis muss aber auch in Visual Studio hinzugefügt werden - Menü "Projekt -
+     Verweis hinzufügen: C:\Programme\WiX Toolset v3.11\bin\WixNetFxExtension.dll").
+-->
     <PropertyRef Id="WIXNETFX4RELEASEINSTALLED"/>
     
+<!-- Für die Prüfung auf .NET Core gibt es keine WiX-Systemvariable. Die Existenz kann festgestellt
+     werden, indem man das Vorhandensein des Verzeichnisses prüft, in dem .NET Core installiert ist.
+     Es gibt eine 32-Bit- und eine 64-Bit-Version, die sich jeweils in einem anderen Verzeichnis
+     befinden. Dessen Existenz versuche ich durch eine Directory-Search abzufragen (wofür ein Verweis
+     auf UtilExtension nötig ist).
+     Derzeit liefern die Conditions weiter unten (in den Control-Elementen "Textfeld 3" und
+     "Textfeld 4") nicht die erwarteten Ergebnisse.
+-->
     <util:DirectorySearch Id="NetCorex86Installed" 
                           Variable="NetCorex86Installed"
                           Path="[ProgramFilesFolder]\dotnet\shared\Microsoft.WindowsDesktop.App\3.1.14"
@@ -44,6 +57,7 @@
                  Size="8" />
 
 <!-- Definition des Dialogfensters mit allen Kontroll-Elementen
+     (hier nur vier Textfelder und ein OK-Schalter)
 -->
       <Dialog Id="FrameworkAnzeigeDialog"
               Width="250"
@@ -51,6 +65,8 @@
               Title="Vorhandene Frameworks"
               NoMinimize="no">
 
+<!-- Die Abfrage von .NET Framework 4.8 funktioniert jetzt.
+-->
         <Control Id="Textfeld1"
                  Type="Text"
                  X="10"
@@ -79,6 +95,11 @@
           </Condition>
         </Control>
 
+<!-- Die Textfelder 3 und 4 zeigen nicht das erwartete Ergebnis an. Es wird immer
+     ".NET Core 3.1.14 fehlt." angezeigt, egal ob es vorhanden ist oder nicht.
+     Noch ist unklar, ob das an der Formulierung der Conditions liegt oder am
+     DirectorySearch weiter oben.
+-->
         <Control Id="Textfeld3"
                  Type="Text"
                  X="10"
@@ -121,8 +142,6 @@
 
       </Dialog>
     </UI>
-    
-    
     
 <!-- InstallUISequence-Element
      An dieser Stelle wird das Installationsprogramm gestartet und das erste
