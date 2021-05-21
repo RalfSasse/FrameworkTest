@@ -18,24 +18,13 @@
 -->
     <PropertyRef Id="WIXNETFX4RELEASEINSTALLED"/>
     
-<!-- Für die Prüfung auf .NET Core gibt es keine WiX-Systemvariable. Die Existenz kann festgestellt
-     werden, indem man das Vorhandensein des Verzeichnisses prüft, in dem .NET Core installiert ist.
-     Es gibt eine 32-Bit- und eine 64-Bit-Version, die sich jeweils in einem anderen Verzeichnis
-     befinden. Dessen Existenz versuche ich durch eine Directory-Search abzufragen (wofür ein Verweis
-     auf UtilExtension nötig ist).
-     Derzeit liefern die Conditions weiter unten (in den Control-Elementen "Textfeld 3" und
-     "Textfeld 4") nicht die erwarteten Ergebnisse.
+<!-- Für die Prüfung auf .NET Core gibt es keine WiX-Systemvariable. Um dessen Existenz auf
+     dem Zielrechner festzustellen wird eine CustomAction (also z.B. eine C#-Funktion innerhalb
+     einer DLL) benötigt. Siehe auch Kommentare in "Product.wxs".
 -->
-    <util:DirectorySearch Id="NetCorex86Installed" 
-                          Variable="NetCorex86Installed"
-                          Path="[ProgramFilesFolder]\dotnet\shared\Microsoft.WindowsDesktop.App\3.1.14"
-                          Result="exists" />
     
-    <util:DirectorySearch Id="NetCorex64Installed" 
-                          Variable="NetCorex64Installed"
-                          Path="[ProgramFiles64Folder]\dotnet\shared\Microsoft.WindowsDesktop.App\3.1.14"
-                          Result="exists" />
-       
+<!-- Hier beginnt die Definition des Dialogfensters.
+-->
     <UI Id="MeinFrameworkTestProgramm">
       
 <!-- DialogRef-Elemente
@@ -65,7 +54,9 @@
               Title="Vorhandene Frameworks"
               NoMinimize="no">
 
-<!-- Die Abfrage von .NET Framework 4.8 funktioniert jetzt.
+<!-- Hier wird geprüft, ob auf dem Zielrechner .NET Framework 4.8 (oder höher)
+     installiert ist. Dazu wird die WiX-Systemvariable WIXNETFX4RELEASEINSTALLED
+     abgefragt, deren Wert "#528040" für die Version 4.8 steht.
 -->
         <Control Id="Textfeld1"
                  Type="Text"
@@ -95,10 +86,10 @@
           </Condition>
         </Control>
 
-<!-- Die Textfelder 3 und 4 zeigen nicht das erwartete Ergebnis an. Es wird immer
-     ".NET Core 3.1.14 fehlt." angezeigt, egal ob es vorhanden ist oder nicht.
-     Noch ist unklar, ob das an der Formulierung der Conditions liegt oder am
-     DirectorySearch weiter oben.
+<!-- Hier wird geprüft, ob auf dem Zielrechner .NET Core 3.1.14 (oder höher)
+     installiert ist. Da es dafür keine WiX-Systemvariable gibt, wurde in "Product.wxs"
+     eine eigene Property "DOTNETCORE3114" definiert und eine CustomAction aufgerufen,
+     also eine C#-Funktion, die diesen Wert ermittelt und in DOTNETCORE3114 schreibt.
 -->
         <Control Id="Textfeld3"
                  Type="Text"
@@ -110,7 +101,7 @@
                  Text=".NET Core 3.1.14 vorhanden.">
 
           <Condition Action="hide">
-            <![CDATA[NOT (NetCorex86Installed OR NetCorex64Installed)]]>
+            <![CDATA[DOTNETCORE3114 = "0"]]>
           </Condition>
         </Control>
 
@@ -124,7 +115,7 @@
                  Text=".NET Core 3.1.14 fehlt.">
 
           <Condition Action="hide">
-            <![CDATA[NetCorex86Installed OR NetCorex64Installed]]>
+            <![CDATA[DOTNETCORE3114 = "1"]]>
           </Condition>
         </Control>
 

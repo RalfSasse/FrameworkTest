@@ -8,7 +8,7 @@
 <!-- Das Media-Element verhindert die Warnung "ICE71: The Media table has no entries."
      und ersetzt das MediaTemplate-Element.
 -->
-    <Media Id='1' />
+    <Media Id="1" />
 
 <!-- UIRef-Element
      Verweis auf das User-Interface (UI-Element) in der Datei "FrameworkAnzeige.wxs",
@@ -20,6 +20,52 @@
     <Feature Id="ProductFeature" Title="FrameworkTest" Level="1">
 			<ComponentGroupRef Id="ProductComponents" />
 		</Feature>
+
+<!-- An dieser Stelle wird eine Property (Variable) definiert, auf die später
+     eine CustomAction (eine C#-Funktion innerhalb einer DLL) zugreifen kann.
+-->
+    <Property Id="DOTNETCORE3114"
+              Value="0"/>
+
+<!-- Mit dem Binary-Element wird die Verbindung zur DLL mit den CustomActions
+     hergestellt. Diese DLL wird in einem separaten Visual-Studio-Projekt
+     vom Typ "C# Custom Action Project for WiX v3" erstellt. Beim Kompilieren
+     entstehen mehrere Dateien, von denen hier aber nur die Datei mit der Endung
+     ".CA.dll" interessant ist.
+-->
+    <Binary Id="DotNetCoreTestCustomAction"
+            SourceFile="DotNetCoreTest.CA.dll"/>
+    
+<!-- Da eine DLL mehrere Funktionen enthalten kann, muss dem MSI-Programm mitgeteilt
+     werden, welche davon es ausführen soll. Hier ist es die Funktion DotNetCoreTest().
+     Im Attribut "Execute" wird angegeben, zu welchem Zeitpunkt der Installation die
+     CustomAction ausgeführt werden soll. Wenn man hier "immediate" angibt, muss der
+     eigentliche Aufruf der CustomAction während der InstallUISequence erfolgen.
+     Eine andere Möglichkeit wäre "deferred": während der InstallExecuteSequence.
+     Im Attribut "Return" wird angegeben, was mit dem Rückgabewert der CustomAction
+     geschehen soll. In diesem Beispiel wird er ignoriert, denn diese CustomAction
+     schreibt ihr Ergebnis direkt in die Property "DOTNETCORE3114". 
+-->    
+    <CustomAction Id="DotNetCoreTest"
+                  BinaryKey="DotNetCoreTestCustomAction"
+                  DllEntry="DotNetCoreTest"
+                  Execute="immediate" 
+                  Return="ignore"/>
+
+<!-- An dieser Stelle wird die CustomAction tatsächlich aufgerufen. Dies kann unter
+     Anderem in InstallUISequence- oder InstallExecuteSequence-Elementen geschehen.
+     Das hat Auswirkungen auf den Zeitpunkt, an dem die CustomAction während der
+     Installation ausgeführt wird. Noch genauer kann man dies mir dem Before- oder
+     After-Attribut festlegen. Es gibt eine festgelegte Reihenfolge von Ereignissen
+     während einer Installation. "CostInitialize" steht ziemlich am Anfang und
+     bedeutet die Berechnung, wieviel Festplattenspeicher für die Installation
+     benötigt wird..
+-->    
+    <InstallUISequence>
+      <Custom Action="DotNetCoreTest"
+              After="CostInitialize"/>
+    </InstallUISequence>
+    
 	</Product>
 
 	<Fragment>
