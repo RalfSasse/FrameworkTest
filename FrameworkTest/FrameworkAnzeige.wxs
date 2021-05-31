@@ -45,6 +45,14 @@
                  FaceName="Tahoma"
                  Size="8" />
 
+<!-- Hier werden die beiden Icons referenziert, die in diesem Dialogfenster angezeigt werden.
+-->
+      <Binary Id="GreenIcon"
+              SourceFile="circle_green.ico" />
+      
+      <Binary Id="RedIcon"
+              SourceFile="circle_red.ico" />
+      
 <!-- Definition des Dialogfensters mit allen Kontroll-Elementen
      (hier nur vier Textfelder und ein OK-Schalter)
 -->
@@ -54,70 +62,106 @@
               Title="Vorhandene Frameworks"
               NoMinimize="no">
 
-<!-- Hier wird geprüft, ob auf dem Zielrechner .NET Framework 4.8 (oder höher)
-     installiert ist. Dazu wird die WiX-Systemvariable WIXNETFX4RELEASEINSTALLED
-     abgefragt, deren Wert "#528040" für die Version 4.8 steht.
--->
-        <Control Id="Textfeld1"
-                 Type="Text"
+<!-- Hier wird mit Hilfe von grünen und roten Icons angezeigt, ob die vorhandenen
+     Versionen von .NET Framework und .NET Core für das zu installierende Programm
+     ausreichen. Benötigt werden mindestens .NET Framework 4.8 und .NET Core 3.1.14.
+     Die Prüfung erfolgt in der "FrameworkTestCustomAction.dll", also in einer
+     C#-Funktion, die die Ergebnisse in die Properties "DOTNETFRAMEWORK48" und
+     "DOTNETCORE3114" schreibt, die vorher in "Product.wxs" definiert wurden.
+-->      
+        <Control Id="FrameworkGreen"
+                 Type="Icon"
+                 Text="GreenIcon"
                  X="10"
                  Y="10"
-                 Width="230"
-                 Height="10"
-                 TabSkip="no"
-                 Text=".NET Framework 4.8 vorhanden.">
-
+                 Width="16"
+                 Height="16"
+                 IconSize="16">
+          
           <Condition Action="hide">
-            <![CDATA[WIXNETFX4RELEASEINSTALLED < "#528040"]]>
+            <![CDATA[DOTNETFRAMEWORK48 = "0"]]>
           </Condition>
         </Control>
 
-        <Control Id="Textfeld2"
-                 Type="Text"
+        <Control Id="FrameworkRed"
+                 Type="Icon"
+                 Text="RedIcon"
                  X="10"
-                 Y="20"
-                 Width="230"
-                 Height="10"
-                 TabSkip="no"
-                 Text=".NET Framework 4.8 fehlt.">
-
+                 Y="10"
+                 Width="16"
+                 Height="16"
+                 IconSize="16">
+          
           <Condition Action="hide">
-            <![CDATA[WIXNETFX4RELEASEINSTALLED >= "#528040"]]>
+            <![CDATA[DOTNETFRAMEWORK48 = "1"]]>
           </Condition>
         </Control>
 
-<!-- Hier wird geprüft, ob auf dem Zielrechner .NET Core 3.1.14 (oder höher)
-     installiert ist. Da es dafür keine WiX-Systemvariable gibt, wurde in "Product.wxs"
-     eine eigene Property "DOTNETCORE3114" definiert und eine CustomAction aufgerufen,
-     also eine C#-Funktion, die diesen Wert ermittelt und in DOTNETCORE3114 schreibt.
--->
-        <Control Id="Textfeld3"
-                 Type="Text"
+        <Control Id="CoreGreen"
+                 Type="Icon"
+                 Text="GreenIcon"
                  X="10"
                  Y="30"
-                 Width="230"
-                 Height="10"
-                 TabSkip="no"
-                 Text=".NET Core 3.1.14 vorhanden.">
-
+                 Width="16"
+                 Height="16"
+                 IconSize="16">
+          
           <Condition Action="hide">
             <![CDATA[DOTNETCORE3114 = "0"]]>
           </Condition>
         </Control>
 
-        <Control Id="Textfeld4"
-                 Type="Text"
+        <Control Id="CoreRed"
+                 Type="Icon"
+                 Text="RedIcon"
                  X="10"
-                 Y="40"
-                 Width="230"
-                 Height="10"
-                 TabSkip="no"
-                 Text=".NET Core 3.1.14 fehlt.">
-
+                 Y="30"
+                 Width="16"
+                 Height="16"
+                 IconSize="16">
+          
           <Condition Action="hide">
             <![CDATA[DOTNETCORE3114 = "1"]]>
           </Condition>
         </Control>
+
+<!-- Hier wird angezeigt, ob auf dem Zielrechner .NET Framework 4.8 (oder höher)
+     installiert ist. Die Prüfung erfolgt in der "FrameworkTestCustomAction.dll",
+     also in einer C#-Funktion, die das Ergebnis in die Property "DOTNETFRAMEWORKVERSION"
+     schreibt, die vorher in "Product.wxs" definiert wurde.
+     Zur Erkennung des .NET Framework 4.8 gibt es auch eine einfachere Möglichkeit:
+     die WiX-Systemvariable "WIXNETFX4RELEASEINSTALLED" (siehe unten).
+-->
+        <Control Id="Textfeld1"
+                 Type="Text"
+                 X="30"
+                 Y="12"
+                 Width="200"
+                 Height="10"
+                 TabSkip="no"
+                 Text="[DOTNETFRAMEWORKVERSION]" />
+
+<!-- Hier wird angezeigt, ob auf dem Zielrechner .NET Core 3.1.14 (oder höher)
+     installiert ist. Die Prüfung erfolgt in der "FrameworkTestCustomAction.dll".
+     also in einer C#-Funktion, die das Ergebnis in die Property "DOTNETCOREVERSION"
+     schreibt, die vorher in "Product.wxs" definiert wurde.
+     Zur Erkennung von .NET Core gibt es keine WiX-Systemvariable.
+-->
+        <Control Id="Textfeld2"
+                 Type="Text"
+                 X="30"
+                 Y="32"
+                 Width="200"
+                 Height="10"
+                 TabSkip="no"
+                 Text="[DOTNETCOREVERSION]" />
+          
+<!-- Andere Möglichkeit zur Erkennung von .NET Framework 4.8:
+          <Condition Action="hide">
+            <![CDATA[WIXNETFX4RELEASEINSTALLED >= "#528040"]]>
+          </Condition>
+        </Control>
+-->
 
         <Control Id="OkButton"
                  Type="PushButton"

@@ -21,11 +21,21 @@
 			<ComponentGroupRef Id="ProductComponents" />
 		</Feature>
 
-<!-- An dieser Stelle wird eine Property (Variable) definiert, auf die später
-     eine CustomAction (eine C#-Funktion innerhalb einer DLL) zugreifen kann.
+<!-- An dieser Stelle werden Properties (Variablen) definiert, auf die später
+     eine CustomAction (eine C#-Funktion innerhalb einer DLL) zugreifen kann:
+     DOTNETFRAMEWORK48:      "1" wenn mindestens Version 4.8 gefunden wird, sonst "0"
+     DOTNETFRAMEWORKVERSION: exakte Versionsnummer der neuesten Version
+     DOTNETCORE3114:         "1" wenn mindestens Version 3.1.14 gefunden wird, sonst "0"
+     DOTNETCOREVERSION:      exakte Versionsnummer der neuesten Version
 -->
+    <Property Id="DOTNETFRAMEWORK48"
+              Value="0"/>
+    <Property Id="DOTNETFRAMEWORKVERSION"
+              Value="DOTNETFRAMEWORKVERSION"/>
     <Property Id="DOTNETCORE3114"
               Value="0"/>
+    <Property Id="DOTNETCOREVERSION"
+              Value="DOTNETCOREVERSION"/>
 
 <!-- Mit dem Binary-Element wird die Verbindung zur DLL mit den CustomActions
      hergestellt. Diese DLL wird in einem separaten Visual-Studio-Projekt
@@ -33,22 +43,23 @@
      entstehen mehrere Dateien, von denen hier aber nur die Datei mit der Endung
      ".CA.dll" interessant ist.
 -->
-    <Binary Id="DotNetCoreTestCustomAction"
-            SourceFile="DotNetCoreTest.CA.dll"/>
+    <Binary Id="FrameworkTestCustomAction"
+            SourceFile="FrameworkTestCustomAction2.CA.dll"/>
     
 <!-- Da eine DLL mehrere Funktionen enthalten kann, muss dem MSI-Programm mitgeteilt
-     werden, welche davon es ausführen soll. Hier ist es die Funktion DotNetCoreTest().
+     werden, welche davon es ausführen soll. Hier ist es die Funktion FrameworkTest().
      Im Attribut "Execute" wird angegeben, zu welchem Zeitpunkt der Installation die
      CustomAction ausgeführt werden soll. Wenn man hier "immediate" angibt, muss der
      eigentliche Aufruf der CustomAction während der InstallUISequence erfolgen.
      Eine andere Möglichkeit wäre "deferred": während der InstallExecuteSequence.
      Im Attribut "Return" wird angegeben, was mit dem Rückgabewert der CustomAction
      geschehen soll. In diesem Beispiel wird er ignoriert, denn diese CustomAction
-     schreibt ihr Ergebnis direkt in die Property "DOTNETCORE3114". 
+     schreibt ihr Ergebnis direkt in die Properties "DOTNETCORE3114" und
+     "DOTNETCOREVERSION".
 -->    
-    <CustomAction Id="DotNetCoreTest"
-                  BinaryKey="DotNetCoreTestCustomAction"
-                  DllEntry="DotNetCoreTest"
+    <CustomAction Id="FrameworkTest"
+                  BinaryKey="FrameworkTestCustomAction"
+                  DllEntry="FrameworkTest"
                   Execute="immediate" 
                   Return="ignore"/>
 
@@ -62,7 +73,7 @@
      benötigt wird..
 -->    
     <InstallUISequence>
-      <Custom Action="DotNetCoreTest"
+      <Custom Action="FrameworkTest"
               After="CostInitialize"/>
     </InstallUISequence>
     
