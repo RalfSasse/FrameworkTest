@@ -57,17 +57,17 @@
      (hier nur vier Textfelder und ein OK-Schalter)
 -->
       <Dialog Id="FrameworkAnzeigeDialog"
-              Width="250"
+              Width="350"
               Height="100"
               Title="Vorhandene Frameworks"
               NoMinimize="no">
 
 <!-- Hier wird mit Hilfe von grünen und roten Icons angezeigt, ob die vorhandenen
      Versionen von .NET Framework und .NET Core für das zu installierende Programm
-     ausreichen. Benötigt werden mindestens .NET Framework 4.8 und .NET Core 3.1.14.
+     ausreichen. Benötigt werden mindestens .NET Framework 4.8 und .NET Core 3.1.15.
      Die Prüfung erfolgt in der "FrameworkTestCustomAction.dll", also in einer
      C#-Funktion, die die Ergebnisse in die Properties "DOTNETFRAMEWORK48" und
-     "DOTNETCORE3114" schreibt, die vorher in "Product.wxs" definiert wurden.
+     "DOTNETCORE3115" schreibt, die vorher in "Product.wxs" definiert wurden.
 -->      
         <Control Id="FrameworkGreen"
                  Type="Icon"
@@ -107,7 +107,7 @@
                  IconSize="16">
           
           <Condition Action="hide">
-            <![CDATA[DOTNETCORE3114 = "0"]]>
+            <![CDATA[DOTNETCORE3115 = "0"]]>
           </Condition>
         </Control>
 
@@ -121,7 +121,7 @@
                  IconSize="16">
           
           <Condition Action="hide">
-            <![CDATA[DOTNETCORE3114 = "1"]]>
+            <![CDATA[DOTNETCORE3115 = "1"]]>
           </Condition>
         </Control>
 
@@ -136,12 +136,12 @@
                  Type="Text"
                  X="30"
                  Y="12"
-                 Width="200"
+                 Width="300"
                  Height="10"
                  TabSkip="no"
                  Text="[DOTNETFRAMEWORKVERSION]" />
 
-<!-- Hier wird angezeigt, ob auf dem Zielrechner .NET Core 3.1.14 (oder höher)
+<!-- Hier wird angezeigt, ob auf dem Zielrechner .NET Core 3.1.15 (oder höher)
      installiert ist. Die Prüfung erfolgt in der "FrameworkTestCustomAction.dll".
      also in einer C#-Funktion, die das Ergebnis in die Property "DOTNETCOREVERSION"
      schreibt, die vorher in "Product.wxs" definiert wurde.
@@ -151,7 +151,7 @@
                  Type="Text"
                  X="30"
                  Y="32"
-                 Width="200"
+                 Width="300"
                  Height="10"
                  TabSkip="no"
                  Text="[DOTNETCOREVERSION]" />
@@ -166,7 +166,7 @@
         <Control Id="OkButton"
                  Type="PushButton"
                  Text="OK"
-                 X="100"
+                 X="150"
                  Y="75"
                  Height="17"
                  Width="50">

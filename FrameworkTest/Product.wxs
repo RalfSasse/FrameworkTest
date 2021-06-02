@@ -25,14 +25,14 @@
      eine CustomAction (eine C#-Funktion innerhalb einer DLL) zugreifen kann:
      DOTNETFRAMEWORK48:      "1" wenn mindestens Version 4.8 gefunden wird, sonst "0"
      DOTNETFRAMEWORKVERSION: exakte Versionsnummer der neuesten Version
-     DOTNETCORE3114:         "1" wenn mindestens Version 3.1.14 gefunden wird, sonst "0"
+     DOTNETCORE3115:         "1" wenn mindestens Version 3.1.15 gefunden wird, sonst "0"
      DOTNETCOREVERSION:      exakte Versionsnummer der neuesten Version
 -->
     <Property Id="DOTNETFRAMEWORK48"
               Value="0"/>
     <Property Id="DOTNETFRAMEWORKVERSION"
               Value="DOTNETFRAMEWORKVERSION"/>
-    <Property Id="DOTNETCORE3114"
+    <Property Id="DOTNETCORE3115"
               Value="0"/>
     <Property Id="DOTNETCOREVERSION"
               Value="DOTNETCOREVERSION"/>
@@ -54,7 +54,7 @@
      Eine andere Möglichkeit wäre "deferred": während der InstallExecuteSequence.
      Im Attribut "Return" wird angegeben, was mit dem Rückgabewert der CustomAction
      geschehen soll. In diesem Beispiel wird er ignoriert, denn diese CustomAction
-     schreibt ihr Ergebnis direkt in die Properties "DOTNETCORE3114" und
+     schreibt ihr Ergebnis direkt in die Properties "DOTNETCORE3115" und
      "DOTNETCOREVERSION".
 -->    
     <CustomAction Id="FrameworkTest"
