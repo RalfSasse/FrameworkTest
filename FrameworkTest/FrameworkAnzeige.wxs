@@ -58,7 +58,7 @@
 -->
       <Dialog Id="FrameworkAnzeigeDialog"
               Width="350"
-              Height="100"
+              Height="300"
               Title="Vorhandene Frameworks"
               NoMinimize="no">
 
@@ -162,12 +162,54 @@
           </Condition>
         </Control>
 -->
+        
+<!-- Das ListView-Element besteht in Wix-Dialogen (anders als in C#-Programmen)
+     immer nur aus einem Icon und einem Text pro Zeile. Es scheint nicht
+     möglich zu sein, mehrere Spalten oder eine Kopfzeile zu definieren.
+     Das Icon lässt sich nicht abhängig vom Inhalt der Variablen auswählen
+     (einzelne ListItem-Elemente können keine Conditions enthalten). Außerdem
+     wird die Reihenfolge der ListItem-Elemente ignoriert (im Dialogfenster
+     steht DOTNETCOREVERSION oberhalb von DOTNETFRAMEWORKVERSION).
+-->
+        <Control Id="myListView"
+                 Type="ListView"
+                 X="10"
+                 Y="60"
+                 Width="300"
+                 Height="90"
+                 Property="selectedItem"
+                 IconSize="16">
+          
+          <ListView Property="selectedItem">
+            <ListItem Text="[DOTNETFRAMEWORKVERSION]" Icon="GreenIcon" Value="1" />
+            <ListItem Text="[DOTNETCOREVERSION]" Icon="RedIcon" Value="2" />
+          </ListView>
+        
+        </Control>
+
+<!-- Das VolumeCostList-Element funktioniert so, wie ein ListView-Element
+     funktionieren sollte: Es hat mehrere Spalten und eine Kopfzeile.
+     Leider funktioniert es aber nur für Angaben zur Speicherkapazität
+     auf Festplatten. Der Inhalt kann nur außerhalb des Dialog-Elements
+     definiert werden (siehe unten). Fehlen Spalten wie "VolumeCostAvailable"
+     oder "VolumeCostRequired", gibt es eine Fehlermeldung vom Compiler.
+     Eigene Spalten-Definitionen wie "MeineSpalte" werden ignoriert.
+-->        
+        <Control Id="myVolumeCostList" 
+                 Type="VolumeCostList" 
+                 X="10" 
+                 Y="160"
+                 Width="300"
+                 Height="90"
+                 Fixed="yes"
+                 Sunken="yes"
+                 Text="{50}{50}{70}{50}{50}{50}" />
 
         <Control Id="OkButton"
                  Type="PushButton"
                  Text="OK"
                  X="150"
-                 Y="75"
+                 Y="275"
                  Height="17"
                  Width="50">
 
@@ -176,6 +218,23 @@
         </Control>
 
       </Dialog>
+
+<!-- Hier steht der Inhalt der VolumeCostList, die weiter oben definiert wurde.
+     Dieser Teil darf nur innerhalb eines UI-Elementes und außerhalb eines
+     Dialog-Elementes stehen.
+-->
+      <UIText Id="Bytes">Bytes</UIText>
+      <UIText Id="KB">KB</UIText>
+      <UIText Id="MB">MB</UIText>
+      <UIText Id="GB">GB</UIText>
+      
+      <UIText Id="VolumeCostAvailable">Freier Speicher</UIText>
+      <UIText Id="VolumeCostDifference">Differenz</UIText>
+      <UIText Id="VolumeCostRequired">Benötigt</UIText>
+      <UIText Id="VolumeCostSize">Gesamt</UIText>
+      <UIText Id="VolumeCostVolume">Name</UIText>  
+      <UIText Id="MeineSpalte">Meine Spalte</UIText>
+
     </UI>
     
 <!-- InstallUISequence-Element
