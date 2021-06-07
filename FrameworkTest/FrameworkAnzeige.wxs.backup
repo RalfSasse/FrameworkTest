@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- FrameworkAnzeige.wxs
+     Hier soll angezeigt werden, ob auf dem Zielrechner die Frameworks
+     ".NET Framework 4.8" und ".NET Core 3.1" vorhanden sind.
+-->
+
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+     xmlns:util="http://schemas.microsoft.com/wix/UtilExtension"
+     xmlns:netfx="http://schemas.microsoft.com/wix/NetFxExtension">
+
+  <Fragment>
+    
+<!-- WiX-Systemvariable abfragen, die die aktuelle Versionsnummer von .NET Framework 4 enthält
+     (z.B. 528040 für .NET Framework 4.8). Erfordert einen Verweis auf NetFxExtension (siehe
+     Zeile 10, Verweis muss aber auch in Visual Studio hinzugefügt werden - Menü "Projekt -
+     Verweis hinzufügen: C:\Programme\WiX Toolset v3.11\bin\WixNetFxExtension.dll").
+-->
+    <PropertyRef Id="WIXNETFX4RELEASEINSTALLED"/>
+    
+<!-- Für die Prüfung auf .NET Core gibt es keine WiX-Systemvariable. Um dessen Existenz auf
+     dem Zielrechner festzustellen wird eine CustomAction (also z.B. eine C#-Funktion innerhalb
+     einer DLL) benötigt. Siehe auch Kommentare in "Product.wxs".
+-->
+    
+<!-- Hier beginnt die Definition des Dialogfensters.
+-->
+    <UI Id="MeinFrameworkTestProgramm">
+      
+<!-- DialogRef-Elemente
+     Verweise auf andere Dialogfenster (diese fünf sind Pflicht für alle MSI-Projekte)
+-->
+      <DialogRef Id="FilesInUse" />
+      <DialogRef Id="ErrorDlg" />
+      <DialogRef Id="FatalError" />
+      <DialogRef Id="UserExit" />
+      <DialogRef Id="ExitDlg" />
+      
+<!-- Die Standard-Schriftart muss definiert und mindestens ein TextStyle muss festgelegt werden.
+-->
+      <Property Id="DefaultUIFont"
+                Value="Tahoma_Regular" />
+      
+      <TextStyle Id="Tahoma_Regular"
+                 FaceName="Tahoma"
+                 Size="8" />
+
+<!-- Hier werden die beiden Icons referenziert, die in diesem Dialogfenster angezeigt werden.
+-->
+      <Binary Id="GreenIcon"
+              SourceFile="circle_green.ico" />
+      
+      <Binary Id="RedIcon"
+              SourceFile="circle_red.ico" />
+      
+<!-- Definition des Dialogfensters mit allen Kontroll-Elementen
+     (hier nur vier Textfelder und ein OK-Schalter)
+-->
+      <Dialog Id="FrameworkAnzeigeDialog"
+              Width="350"
+              Height="300"
+              Title="Vorhandene Frameworks"
+              NoMinimize="no">
+
+<!-- Hier wird mit Hilfe von grünen und roten Icons angezeigt, ob die vorhandenen
+     Versionen von .NET Framework und .NET Core für das zu installierende Programm
+     ausreichen. Benötigt werden mindestens .NET Framework 4.8 und .NET Core 3.1.15.
+     Die Prüfung erfolgt in der "FrameworkTestCustomAction.dll", also in einer
+     C#-Funktion, die die Ergebnisse in die Properties "DOTNETFRAMEWORK48" und
+     "DOTNETCORE3115" schreibt, die vorher in "Product.wxs" definiert wurden.
+-->      
+        <Control Id="FrameworkGreen"
+                 Type="Icon"
+                 Text="GreenIcon"
+                 X="10"
+                 Y="10"
+                 Width="16"
+                 Height="16"
+                 IconSize="16">
+          
+          <Condition Action="hide">
+            <![CDATA[DOTNETFRAMEWORK48 = "0"]]>
+          </Condition>
+        </Control>
+
+        <Control Id="FrameworkRed"
+                 Type="Icon"
+                 Text="RedIcon"
+                 X="10"
+                 Y="10"
+                 Width="16"
+                 Height="16"
+                 IconSize="16">
+          
+          <Condition Action="hide">
+            <![CDATA[DOTNETFRAMEWORK48 = "1"]]>
+          </Condition>
+        </Control>
+
+        <Control Id="CoreGreen"
+                 Type="Icon"
+                 Text="GreenIcon"
+                 X="10"
+                 Y="30"
+                 Width="16"
+                 Height="16"
+                 IconSize="16">
+          
+          <Condition Action="hide">
+            <![CDATA[DOTNETCORE3115 = "0"]]>
+          </Condition>
+        </Control>
+
+        <Control Id="CoreRed"
+                 Type="Icon"
+                 Text="RedIcon"
+                 X="10"
+                 Y="30"
+                 Width="16"
+                 Height="16"
+                 IconSize="16">
+          
+          <Condition Action="hide">
+            <![CDATA[DOTNETCORE3115 = "1"]]>
+          </Condition>
+        </Control>
+
+<!-- Hier wird angezeigt, ob auf dem Zielrechner .NET Framework 4.8 (oder höher)
+     installiert ist. Die Prüfung erfolgt in der "FrameworkTestCustomAction.dll",
+     also in einer C#-Funktion, die das Ergebnis in die Property "DOTNETFRAMEWORKVERSION"
+     schreibt, die vorher in "Product.wxs" definiert wurde.
+     Zur Erkennung des .NET Framework 4.8 gibt es auch eine einfachere Möglichkeit:
+     die WiX-Systemvariable "WIXNETFX4RELEASEINSTALLED" (siehe unten).
+-->
+        <Control Id="Textfeld1"
+                 Type="Text"
+                 X="30"
+                 Y="12"
+                 Width="300"
+                 Height="10"
+                 TabSkip="no"
+                 Text="[DOTNETFRAMEWORKVERSION]" />
+
+<!-- Hier wird angezeigt, ob auf dem Zielrechner .NET Core 3.1.15 (oder höher)
+     installiert ist. Die Prüfung erfolgt in der "FrameworkTestCustomAction.dll".
+     also in einer C#-Funktion, die das Ergebnis in die Property "DOTNETCOREVERSION"
+     schreibt, die vorher in "Product.wxs" definiert wurde.
+     Zur Erkennung von .NET Core gibt es keine WiX-Systemvariable.
+-->
+        <Control Id="Textfeld2"
+                 Type="Text"
+                 X="30"
+                 Y="32"
+                 Width="300"
+                 Height="10"
+                 TabSkip="no"
+                 Text="[DOTNETCOREVERSION]" />
+          
+<!-- Andere Möglichkeit zur Erkennung von .NET Framework 4.8:
+          <Condition Action="hide">
+            <![CDATA[WIXNETFX4RELEASEINSTALLED >= "#528040"]]>
+          </Condition>
+        </Control>
+-->
+        
+<!-- Das ListView-Element besteht in Wix-Dialogen (anders als in C#-Programmen)
+     immer nur aus einem Icon und einem Text pro Zeile. Es scheint nicht
+     möglich zu sein, mehrere Spalten oder eine Kopfzeile zu definieren.
+     Das Icon lässt sich nicht abhängig vom Inhalt der Variablen auswählen
+     (einzelne ListItem-Elemente können keine Conditions enthalten). Außerdem
+     wird die Reihenfolge der ListItem-Elemente ignoriert (im Dialogfenster
+     steht DOTNETCOREVERSION oberhalb von DOTNETFRAMEWORKVERSION).
+-->
+        <Control Id="myListView"
+                 Type="ListView"
+                 X="10"
+                 Y="60"
+                 Width="300"
+                 Height="90"
+                 Property="selectedItem"
+                 IconSize="16">
+          
+          <ListView Property="selectedItem">
+            <ListItem Text="[DOTNETFRAMEWORKVERSION]" Icon="GreenIcon" Value="1" />
+            <ListItem Text="[DOTNETCOREVERSION]" Icon="RedIcon" Value="2" />
+          </ListView>
+        
+        </Control>
+
+<!-- Das VolumeCostList-Element funktioniert so, wie ein ListView-Element
+     funktionieren sollte: Es hat mehrere Spalten und eine Kopfzeile.
+     Leider funktioniert es aber nur für Angaben zur Speicherkapazität
+     auf Festplatten. Der Inhalt kann nur außerhalb des Dialog-Elements
+     definiert werden (siehe unten). Fehlen Spalten wie "VolumeCostAvailable"
+     oder "VolumeCostRequired", gibt es eine Fehlermeldung vom Compiler.
+     Eigene Spalten-Definitionen wie "MeineSpalte" werden ignoriert.
+-->        
+        <Control Id="myVolumeCostList" 
+                 Type="VolumeCostList" 
+                 X="10" 
+                 Y="160"
+                 Width="300"
+                 Height="90"
+                 Fixed="yes"
+                 Sunken="yes"
+                 Text="{50}{50}{70}{50}{50}{50}" />
+
+        <Control Id="OkButton"
+                 Type="PushButton"
+                 Text="OK"
+                 X="150"
+                 Y="275"
+                 Height="17"
+                 Width="50">
+
+          <Publish Event="EndDialog"
+                   Value="Exit" />
+        </Control>
+
+      </Dialog>
+
+<!-- Hier steht der Inhalt der VolumeCostList, die weiter oben definiert wurde.
+     Dieser Teil darf nur innerhalb eines UI-Elementes und außerhalb eines
+     Dialog-Elementes stehen.
+-->
+      <UIText Id="Bytes">Bytes</UIText>
+      <UIText Id="KB">KB</UIText>
+      <UIText Id="MB">MB</UIText>
+      <UIText Id="GB">GB</UIText>
+      
+      <UIText Id="VolumeCostAvailable">Freier Speicher</UIText>
+      <UIText Id="VolumeCostDifference">Differenz</UIText>
+      <UIText Id="VolumeCostRequired">Benötigt</UIText>
+      <UIText Id="VolumeCostSize">Gesamt</UIText>
+      <UIText Id="VolumeCostVolume">Name</UIText>  
+      <UIText Id="MeineSpalte">Meine Spalte</UIText>
+
+    </UI>
+    
+<!-- InstallUISequence-Element
+     An dieser Stelle wird das Installationsprogramm gestartet und das erste
+     Dialogfenster angezeigt. Die Anzahl und Reihenfolge der weiteren Dialogfenster
+     ergibt sich aus dem Inhalt der Publish-Elemente innerhalb der Control-Elemente.
+-->
+    <InstallUISequence>
+
+      <Show Dialog="FrameworkAnzeigeDialog"
+            Before="ExecuteAction" />
+
+    </InstallUISequence>
+
+  </Fragment>
+
+</Wix>
