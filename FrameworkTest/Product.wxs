@@ -23,20 +23,30 @@
 
 <!-- An dieser Stelle werden Properties (Variablen) definiert, auf die später
      eine CustomAction (eine C#-Funktion innerhalb einer DLL) zugreifen kann:
-     DOTNETFRAMEWORK48:      "1" wenn mindestens Version 4.8 gefunden wird, sonst "0"
-     DOTNETFRAMEWORKVERSION: exakte Versionsnummer der neuesten Version
-     DOTNETCORE3115:         "1" wenn mindestens Version 3.1.15 gefunden wird, sonst "0"
-     DOTNETCOREVERSION:      exakte Versionsnummer der neuesten Version
+     DOTNETFRAMEWORK48:           "1" wenn mindestens Version 4.8 gefunden wird, sonst "0"
+     DOTNETFRAMEWORKVORHANDEN:    exakte Versionsnummer der vorhandenen Version
+     DOTNETFRAMEWORKERFORDERLICH: exakte Versionsnummer der erforderlichen Version
+     DOTNETCORE3115:              "1" wenn mindestens Version 3.1.15 gefunden wird, sonst "0"
+     DOTNETCOREVORHANDEN:         exakte Versionsnummer der vorhandenen Version
+     DOTNETCOREERFORDERLICH:      exakte Versionsnummer der erforderlichen Version
 -->
     <Property Id="DOTNETFRAMEWORK48"
               Value="0"/>
-    <Property Id="DOTNETFRAMEWORKVERSION"
-              Value="DOTNETFRAMEWORKVERSION"/>
+    <Property Id="DOTNETFRAMEWORKVORHANDEN"
+              Value="DOTNETFRAMEWORKVORHANDEN"/>
+    <Property Id="DOTNETFRAMEWORKERFORDERLICH"
+              Value="DOTNETFRAMEWORKERFORDERLICH"/>
     <Property Id="DOTNETCORE3115"
               Value="0"/>
-    <Property Id="DOTNETCOREVERSION"
-              Value="DOTNETCOREVERSION"/>
+    <Property Id="DOTNETCOREVORHANDEN"
+              Value="DOTNETCOREVORHANDEN"/>
+    <Property Id="DOTNETCOREERFORDERLICH"
+              Value="DOTNETCOREERFORDERLICH"/>
 
+    <!-- Binary-Element für die Bitmap-Datei mit dem weißen Hintergrund der "Fake-Tabelle".
+-->
+    <Binary Id="Hintergrund" SourceFile="weiss.bmp" />
+    
 <!-- Mit dem Binary-Element wird die Verbindung zur DLL mit den CustomActions
      hergestellt. Diese DLL wird in einem separaten Visual-Studio-Projekt
      vom Typ "C# Custom Action Project for WiX v3" erstellt. Beim Kompilieren

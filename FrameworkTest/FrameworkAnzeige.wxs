@@ -58,9 +58,112 @@
 -->
       <Dialog Id="FrameworkAnzeigeDialog"
               Width="350"
-              Height="300"
+              Height="200"
               Title="Vorhandene Frameworks"
               NoMinimize="no">
+
+<!-- Hier werden GroupBox-Elemente gezeichnet, um eine Tabelle zu "faken".
+     ListView-Elemente gibt es zwar auch bei WiX, aber hier sind sie keine Tabellen
+     wie z.B. in C#, sondern Listen, in denen jede Zeile nur ein Icon und einen
+     Text enthalten kann. Es gibt auch Elemente, die wie ListViews in C# aussehen
+     (wie z.B VolumeCostList), aber die sind spezialisiert (z.B. auf die Anzeige
+     der Speicherkapazität von Laufwerken) und lassen sich nicht zweckentfremden.
+     Eine Tabelle aus Linien zusammenzusetzen geht an dieser Stelle auch nicht,
+     weil Linien in WiX nur horizontal sein können, aber nicht vertikal.
+     Weil man bei GroupBox-Elementen keine Hintergrundfarbe einstellen kann,
+     wird zunächst eine weiße Bitmap-Grafik als Hintergrundbild definiert.
+-->        
+        <Control Id="TabellenHintergrund"        
+                 Type="Bitmap"
+                 Text="Hintergrund"
+                 X="10" 
+                 Y="15"
+                 Height="72" 
+                 Width="330" />    
+        
+        <Control Id="GroupBox1"        
+                 Type="GroupBox"
+                 X="10" 
+                 Y="10"
+                 Height="30" 
+                 Width="30" />
+        
+        <Control Id="GroupBox2"        
+                 Type="GroupBox"
+                 X="40" 
+                 Y="10"
+                 Height="30" 
+                 Width="150" />
+        
+        <Control Id="GroupBox3"        
+                 Type="GroupBox"
+                 X="190" 
+                 Y="10"
+                 Height="30" 
+                 Width="150" />
+        
+        <Control Id="GroupBox4"        
+                 Type="GroupBox"
+                 X="10" 
+                 Y="35"
+                 Height="30" 
+                 Width="30" />
+        
+        <Control Id="GroupBox5"        
+                 Type="GroupBox"
+                 X="40" 
+                 Y="35"
+                 Height="30" 
+                 Width="150" />
+        
+        <Control Id="GroupBox6"        
+                 Type="GroupBox"
+                 X="190" 
+                 Y="35"
+                 Height="30" 
+                 Width="150" />
+        
+        <Control Id="GroupBox7"        
+                 Type="GroupBox"
+                 X="10" 
+                 Y="58"
+                 Height="30" 
+                 Width="30" />
+        
+        <Control Id="GroupBox8"        
+                 Type="GroupBox"
+                 X="40" 
+                 Y="58"
+                 Height="30" 
+                 Width="150" />
+        
+        <Control Id="GroupBox9"        
+                 Type="GroupBox"
+                 X="190" 
+                 Y="58"
+                 Height="30" 
+                 Width="150" />
+        
+        <Control Id="Tabellenkopf1"
+                 Type="Text"
+                 X="50"
+                 Y="22"
+                 Width="300"
+                 Height="10"
+                 Transparent="yes"
+                 TabSkip="no"
+                 Text="Vorhanden" />
+
+        <Control Id="Tabellenkopf2"
+                 Type="Text"
+                 X="200"
+                 Y="22"
+                 Width="300"
+                 Height="10"
+                 Transparent="yes"
+                 TabSkip="no"
+                 Text="Erforderlich" />
+
 
 <!-- Hier wird mit Hilfe von grünen und roten Icons angezeigt, ob die vorhandenen
      Versionen von .NET Framework und .NET Core für das zu installierende Programm
@@ -72,8 +175,8 @@
         <Control Id="FrameworkGreen"
                  Type="Icon"
                  Text="GreenIcon"
-                 X="10"
-                 Y="10"
+                 X="17"
+                 Y="43"
                  Width="16"
                  Height="16"
                  IconSize="16">
@@ -86,8 +189,8 @@
         <Control Id="FrameworkRed"
                  Type="Icon"
                  Text="RedIcon"
-                 X="10"
-                 Y="10"
+                 X="17"
+                 Y="43"
                  Width="16"
                  Height="16"
                  IconSize="16">
@@ -100,8 +203,8 @@
         <Control Id="CoreGreen"
                  Type="Icon"
                  Text="GreenIcon"
-                 X="10"
-                 Y="30"
+                 X="17"
+                 Y="67"
                  Width="16"
                  Height="16"
                  IconSize="16">
@@ -114,8 +217,8 @@
         <Control Id="CoreRed"
                  Type="Icon"
                  Text="RedIcon"
-                 X="10"
-                 Y="30"
+                 X="17"
+                 Y="67"
                  Width="16"
                  Height="16"
                  IconSize="16">
@@ -134,12 +237,23 @@
 -->
         <Control Id="Textfeld1"
                  Type="Text"
-                 X="30"
-                 Y="12"
+                 X="50"
+                 Y="47"
                  Width="300"
                  Height="10"
+                 Transparent="yes"
                  TabSkip="no"
-                 Text="[DOTNETFRAMEWORKVERSION]" />
+                 Text="[DOTNETFRAMEWORKVORHANDEN]" />
+
+        <Control Id="Textfeld2"
+                 Type="Text"
+                 X="200"
+                 Y="47"
+                 Width="300"
+                 Height="10"
+                 Transparent="yes"
+                 TabSkip="no"
+                 Text="[DOTNETFRAMEWORKERFORDERLICH]" />
 
 <!-- Hier wird angezeigt, ob auf dem Zielrechner .NET Core 3.1.15 (oder höher)
      installiert ist. Die Prüfung erfolgt in der "FrameworkTestCustomAction.dll".
@@ -147,14 +261,25 @@
      schreibt, die vorher in "Product.wxs" definiert wurde.
      Zur Erkennung von .NET Core gibt es keine WiX-Systemvariable.
 -->
-        <Control Id="Textfeld2"
+        <Control Id="Textfeld3"
                  Type="Text"
-                 X="30"
-                 Y="32"
+                 X="50"
+                 Y="70"
                  Width="300"
                  Height="10"
+                 Transparent="yes"
                  TabSkip="no"
-                 Text="[DOTNETCOREVERSION]" />
+                 Text="[DOTNETCOREVORHANDEN]" />
+          
+        <Control Id="Textfeld4"
+                 Type="Text"
+                 X="200"
+                 Y="70"
+                 Width="300"
+                 Height="10"
+                 Transparent="yes"
+                 TabSkip="no"
+                 Text="[DOTNETCOREERFORDERLICH]" />
           
 <!-- Andere Möglichkeit zur Erkennung von .NET Framework 4.8:
           <Condition Action="hide">
@@ -162,54 +287,12 @@
           </Condition>
         </Control>
 -->
-        
-<!-- Das ListView-Element besteht in Wix-Dialogen (anders als in C#-Programmen)
-     immer nur aus einem Icon und einem Text pro Zeile. Es scheint nicht
-     möglich zu sein, mehrere Spalten oder eine Kopfzeile zu definieren.
-     Das Icon lässt sich nicht abhängig vom Inhalt der Variablen auswählen
-     (einzelne ListItem-Elemente können keine Conditions enthalten). Außerdem
-     wird die Reihenfolge der ListItem-Elemente ignoriert (im Dialogfenster
-     steht DOTNETCOREVERSION oberhalb von DOTNETFRAMEWORKVERSION).
--->
-        <Control Id="myListView"
-                 Type="ListView"
-                 X="10"
-                 Y="60"
-                 Width="300"
-                 Height="90"
-                 Property="selectedItem"
-                 IconSize="16">
-          
-          <ListView Property="selectedItem">
-            <ListItem Text="[DOTNETFRAMEWORKVERSION]" Icon="GreenIcon" Value="1" />
-            <ListItem Text="[DOTNETCOREVERSION]" Icon="RedIcon" Value="2" />
-          </ListView>
-        
-        </Control>
-
-<!-- Das VolumeCostList-Element funktioniert so, wie ein ListView-Element
-     funktionieren sollte: Es hat mehrere Spalten und eine Kopfzeile.
-     Leider funktioniert es aber nur für Angaben zur Speicherkapazität
-     auf Festplatten. Der Inhalt kann nur außerhalb des Dialog-Elements
-     definiert werden (siehe unten). Fehlen Spalten wie "VolumeCostAvailable"
-     oder "VolumeCostRequired", gibt es eine Fehlermeldung vom Compiler.
-     Eigene Spalten-Definitionen wie "MeineSpalte" werden ignoriert.
--->        
-        <Control Id="myVolumeCostList" 
-                 Type="VolumeCostList" 
-                 X="10" 
-                 Y="160"
-                 Width="300"
-                 Height="90"
-                 Fixed="yes"
-                 Sunken="yes"
-                 Text="{50}{50}{70}{50}{50}{50}" />
 
         <Control Id="OkButton"
                  Type="PushButton"
                  Text="OK"
                  X="150"
-                 Y="275"
+                 Y="175"
                  Height="17"
                  Width="50">
 
@@ -218,22 +301,6 @@
         </Control>
 
       </Dialog>
-
-<!-- Hier steht der Inhalt der VolumeCostList, die weiter oben definiert wurde.
-     Dieser Teil darf nur innerhalb eines UI-Elementes und außerhalb eines
-     Dialog-Elementes stehen.
--->
-      <UIText Id="Bytes">Bytes</UIText>
-      <UIText Id="KB">KB</UIText>
-      <UIText Id="MB">MB</UIText>
-      <UIText Id="GB">GB</UIText>
-      
-      <UIText Id="VolumeCostAvailable">Freier Speicher</UIText>
-      <UIText Id="VolumeCostDifference">Differenz</UIText>
-      <UIText Id="VolumeCostRequired">Benötigt</UIText>
-      <UIText Id="VolumeCostSize">Gesamt</UIText>
-      <UIText Id="VolumeCostVolume">Name</UIText>  
-      <UIText Id="MeineSpalte">Meine Spalte</UIText>
 
     </UI>
     
