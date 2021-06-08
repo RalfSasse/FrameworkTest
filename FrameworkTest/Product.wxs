@@ -35,13 +35,13 @@
     <Property Id="DOTNETFRAMEWORKVORHANDEN"
               Value="DOTNETFRAMEWORKVORHANDEN"/>
     <Property Id="DOTNETFRAMEWORKERFORDERLICH"
-              Value="DOTNETFRAMEWORKERFORDERLICH"/>
+              Value=".NET Framework 4.8"/>
     <Property Id="DOTNETCORE3115"
               Value="0"/>
     <Property Id="DOTNETCOREVORHANDEN"
               Value="DOTNETCOREVORHANDEN"/>
     <Property Id="DOTNETCOREERFORDERLICH"
-              Value="DOTNETCOREERFORDERLICH"/>
+              Value=".NET Core 3.1.15"/>
 
     <!-- Binary-Element für die Bitmap-Datei mit dem weißen Hintergrund der "Fake-Tabelle".
 -->
@@ -64,8 +64,8 @@
      Eine andere Möglichkeit wäre "deferred": während der InstallExecuteSequence.
      Im Attribut "Return" wird angegeben, was mit dem Rückgabewert der CustomAction
      geschehen soll. In diesem Beispiel wird er ignoriert, denn diese CustomAction
-     schreibt ihr Ergebnis direkt in die Properties "DOTNETCORE3115" und
-     "DOTNETCOREVERSION".
+     schreibt ihre Ergebnisse direkt in die Properties "DOTNETFRAMEWORK48", 
+     "DOTNETFRAMEWORKVORHANDEN", "DOTNETCORE3115" und "DOTNETCOREVORHANDEN".
 -->    
     <CustomAction Id="FrameworkTest"
                   BinaryKey="FrameworkTestCustomAction"
@@ -80,7 +80,7 @@
      After-Attribut festlegen. Es gibt eine festgelegte Reihenfolge von Ereignissen
      während einer Installation. "CostInitialize" steht ziemlich am Anfang und
      bedeutet die Berechnung, wieviel Festplattenspeicher für die Installation
-     benötigt wird..
+     benötigt wird.
 -->    
     <InstallUISequence>
       <Custom Action="FrameworkTest"
@@ -89,6 +89,10 @@
     
 	</Product>
 
+<!-- In diesen beiden Fragments wird festgelegt, in welches Verzeichnis auf dem
+     Zielrechner das Programm installiert werden soll. In diesem Test-Skript
+     wird allerdings nichts installiert.
+-->
 	<Fragment>
 		<Directory Id="TARGETDIR" Name="SourceDir">
 			<Directory Id="ProgramFilesFolder">

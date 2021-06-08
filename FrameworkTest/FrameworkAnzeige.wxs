@@ -11,10 +11,14 @@
 
   <Fragment>
     
-<!-- WiX-Systemvariable abfragen, die die aktuelle Versionsnummer von .NET Framework 4 enthält
-     (z.B. 528040 für .NET Framework 4.8). Erfordert einen Verweis auf NetFxExtension (siehe
-     Zeile 10, Verweis muss aber auch in Visual Studio hinzugefügt werden - Menü "Projekt -
-     Verweis hinzufügen: C:\Programme\WiX Toolset v3.11\bin\WixNetFxExtension.dll").
+<!-- Hier könnte die WiX-Systemvariable WIXNETFX4RELEASEINSTALLED abgefragt werden, die die
+     aktuelle Versionsnummer von .NET Framework 4 enthält (z.B. 528040 für .NET Framework 4.8). 
+     Dies erfordert einen Verweis auf NetFxExtension (siehe Zeile 10, Verweis muss aber auch
+     in Visual Studio hinzugefügt werden - dort im Menüpunkt "Projekt - Verweis hinzufügen: 
+     C:\Programme\WiX Toolset v3.11\bin\WixNetFxExtension.dll").
+     Tatsächlich wird diese Systemvariable in diesem WiX-Skript nicht benutzt, denn sie kann
+     nur Versionsnummern ab 4.5 enthalten. Es sollen aber auch niedrigere Versionsnummern
+     angezeigt werden. Die Funktionalität wurde deshalb in eine CustomAction ausgelagert.
 -->
     <PropertyRef Id="WIXNETFX4RELEASEINSTALLED"/>
     
@@ -28,7 +32,9 @@
     <UI Id="MeinFrameworkTestProgramm">
       
 <!-- DialogRef-Elemente
-     Verweise auf andere Dialogfenster (diese fünf sind Pflicht für alle MSI-Projekte)
+     Hier stehen Verweise auf andere Dialogfenster (diese fünf sind Pflicht für alle MSI-Projekte).
+     Sollte das WiX-Skript mehr als ein selbstdefiniertes Dialogfenster enthalten, müssen für diese
+     ebenfalls an dieser Stelle Verweise stehen.
 -->
       <DialogRef Id="FilesInUse" />
       <DialogRef Id="ErrorDlg" />
@@ -54,7 +60,9 @@
               SourceFile="circle_red.ico" />
       
 <!-- Definition des Dialogfensters mit allen Kontroll-Elementen
-     (hier nur vier Textfelder und ein OK-Schalter)
+     (hier nur sechs Textfelder, vier Icons und ein OK-Schalter sowie neun GroupBox-
+     Elemente, mit denen eine Tabelle gebaut wird - das WiX-Element "ListView" ist
+     leider keine richtige Tabelle wie "ListViews" in C#, siehe unten).
 -->
       <Dialog Id="FrameworkAnzeigeDialog"
               Width="350"
@@ -71,84 +79,89 @@
      Eine Tabelle aus Linien zusammenzusetzen geht an dieser Stelle auch nicht,
      weil Linien in WiX nur horizontal sein können, aber nicht vertikal.
      Weil man bei GroupBox-Elementen keine Hintergrundfarbe einstellen kann,
-     wird zunächst eine weiße Bitmap-Grafik als Hintergrundbild definiert.
+     wird zunächst eine weiße Bitmap-Grafik als Hintergrundbild definiert,
+     deren Größe exakt mit der Gesamtfläche der neun GroupBoxen übereinstimmt.
 -->        
         <Control Id="TabellenHintergrund"        
                  Type="Bitmap"
                  Text="Hintergrund"
                  X="10" 
                  Y="15"
-                 Height="72" 
-                 Width="330" />    
+                 Height="45" 
+                 Width="324" />    
         
         <Control Id="GroupBox1"        
                  Type="GroupBox"
                  X="10" 
                  Y="10"
-                 Height="30" 
-                 Width="30" />
+                 Height="21" 
+                 Width="24" />
         
         <Control Id="GroupBox2"        
                  Type="GroupBox"
-                 X="40" 
+                 X="34" 
                  Y="10"
-                 Height="30" 
+                 Height="21" 
                  Width="150" />
         
         <Control Id="GroupBox3"        
                  Type="GroupBox"
-                 X="190" 
+                 X="184" 
                  Y="10"
-                 Height="30" 
+                 Height="21" 
                  Width="150" />
         
         <Control Id="GroupBox4"        
                  Type="GroupBox"
                  X="10" 
-                 Y="35"
-                 Height="30" 
-                 Width="30" />
+                 Y="25"
+                 Height="21" 
+                 Width="24" />
         
         <Control Id="GroupBox5"        
                  Type="GroupBox"
-                 X="40" 
-                 Y="35"
-                 Height="30" 
+                 X="34" 
+                 Y="25"
+                 Height="21" 
                  Width="150" />
         
         <Control Id="GroupBox6"        
                  Type="GroupBox"
-                 X="190" 
-                 Y="35"
-                 Height="30" 
+                 X="184" 
+                 Y="25"
+                 Height="21" 
                  Width="150" />
         
         <Control Id="GroupBox7"        
                  Type="GroupBox"
                  X="10" 
-                 Y="58"
-                 Height="30" 
-                 Width="30" />
+                 Y="40"
+                 Height="21" 
+                 Width="24" />
         
         <Control Id="GroupBox8"        
                  Type="GroupBox"
-                 X="40" 
-                 Y="58"
-                 Height="30" 
+                 X="34" 
+                 Y="40"
+                 Height="21" 
                  Width="150" />
         
         <Control Id="GroupBox9"        
                  Type="GroupBox"
-                 X="190" 
-                 Y="58"
-                 Height="30" 
+                 X="184" 
+                 Y="40"
+                 Height="21" 
                  Width="150" />
-        
+
+<!-- Diese beiden Text-Elemente bilden die Überschriften der Tabellenspalten.
+     Wichtig ist hier das Attribut 'Transparent="yes"'. Wenn es fehlt, steht der
+     Text unsichtbar hinter dem weißen Hintergrund-Bitmap.
+-->
         <Control Id="Tabellenkopf1"
                  Type="Text"
-                 X="50"
-                 Y="22"
-                 Width="300"
+                 X="40"
+                 Y="17"
+                 Width="150"
                  Height="10"
                  Transparent="yes"
                  TabSkip="no"
@@ -156,29 +169,31 @@
 
         <Control Id="Tabellenkopf2"
                  Type="Text"
-                 X="200"
-                 Y="22"
-                 Width="300"
+                 X="190"
+                 Y="17"
+                 Width="150"
                  Height="10"
                  Transparent="yes"
                  TabSkip="no"
                  Text="Erforderlich" />
 
-
 <!-- Hier wird mit Hilfe von grünen und roten Icons angezeigt, ob die vorhandenen
      Versionen von .NET Framework und .NET Core für das zu installierende Programm
      ausreichen. Benötigt werden mindestens .NET Framework 4.8 und .NET Core 3.1.15.
-     Die Prüfung erfolgt in der "FrameworkTestCustomAction.dll", also in einer
+     Die Prüfung erfolgt in der "FrameworkTestCustomAction2.dll", also in einer
      C#-Funktion, die die Ergebnisse in die Properties "DOTNETFRAMEWORK48" und
      "DOTNETCORE3115" schreibt, die vorher in "Product.wxs" definiert wurden.
+     Für jedes Framework sind zwei Icons definiert, das unzutreffende wird mit der
+     Action "hide" ausgeblendet. Umgekehrt funktionierte das nicht; es gibt zwar
+     auch eine Action "show", aber diese ist voreingestellt.
 -->      
         <Control Id="FrameworkGreen"
                  Type="Icon"
                  Text="GreenIcon"
                  X="17"
-                 Y="43"
-                 Width="16"
-                 Height="16"
+                 Y="32"
+                 Width="10"
+                 Height="10"
                  IconSize="16">
           
           <Condition Action="hide">
@@ -190,9 +205,9 @@
                  Type="Icon"
                  Text="RedIcon"
                  X="17"
-                 Y="43"
-                 Width="16"
-                 Height="16"
+                 Y="32"
+                 Width="10"
+                 Height="10"
                  IconSize="16">
           
           <Condition Action="hide">
@@ -204,9 +219,9 @@
                  Type="Icon"
                  Text="GreenIcon"
                  X="17"
-                 Y="67"
-                 Width="16"
-                 Height="16"
+                 Y="47"
+                 Width="10"
+                 Height="10"
                  IconSize="16">
           
           <Condition Action="hide">
@@ -218,9 +233,9 @@
                  Type="Icon"
                  Text="RedIcon"
                  X="17"
-                 Y="67"
-                 Width="16"
-                 Height="16"
+                 Y="47"
+                 Width="10"
+                 Height="10"
                  IconSize="16">
           
           <Condition Action="hide">
@@ -230,15 +245,15 @@
 
 <!-- Hier wird angezeigt, ob auf dem Zielrechner .NET Framework 4.8 (oder höher)
      installiert ist. Die Prüfung erfolgt in der "FrameworkTestCustomAction.dll",
-     also in einer C#-Funktion, die das Ergebnis in die Property "DOTNETFRAMEWORKVERSION"
+     also in einer C#-Funktion, die das Ergebnis in die Property "DOTNETFRAMEWORKVORHANDEN"
      schreibt, die vorher in "Product.wxs" definiert wurde.
      Zur Erkennung des .NET Framework 4.8 gibt es auch eine einfachere Möglichkeit:
      die WiX-Systemvariable "WIXNETFX4RELEASEINSTALLED" (siehe unten).
 -->
         <Control Id="Textfeld1"
                  Type="Text"
-                 X="50"
-                 Y="47"
+                 X="40"
+                 Y="32"
                  Width="300"
                  Height="10"
                  Transparent="yes"
@@ -247,8 +262,8 @@
 
         <Control Id="Textfeld2"
                  Type="Text"
-                 X="200"
-                 Y="47"
+                 X="190"
+                 Y="32"
                  Width="300"
                  Height="10"
                  Transparent="yes"
@@ -257,14 +272,14 @@
 
 <!-- Hier wird angezeigt, ob auf dem Zielrechner .NET Core 3.1.15 (oder höher)
      installiert ist. Die Prüfung erfolgt in der "FrameworkTestCustomAction.dll".
-     also in einer C#-Funktion, die das Ergebnis in die Property "DOTNETCOREVERSION"
+     also in einer C#-Funktion, die das Ergebnis in die Property "DOTNETCOREVORHANDEN"
      schreibt, die vorher in "Product.wxs" definiert wurde.
      Zur Erkennung von .NET Core gibt es keine WiX-Systemvariable.
 -->
         <Control Id="Textfeld3"
                  Type="Text"
-                 X="50"
-                 Y="70"
+                 X="40"
+                 Y="47"
                  Width="300"
                  Height="10"
                  Transparent="yes"
@@ -273,8 +288,8 @@
           
         <Control Id="Textfeld4"
                  Type="Text"
-                 X="200"
-                 Y="70"
+                 X="190"
+                 Y="47"
                  Width="300"
                  Height="10"
                  Transparent="yes"
@@ -288,6 +303,8 @@
         </Control>
 -->
 
+<!-- Hier wird ein PushButton-Element definiert, der das Dialofenster schließt.
+-->
         <Control Id="OkButton"
                  Type="PushButton"
                  Text="OK"
